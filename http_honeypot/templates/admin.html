@@ -4,50 +4,7 @@
     <meta charset="UTF-8">
     <title>Admin Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: #1e1e2f;
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .login-box {
-            background: #2c2c3e;
-            padding: 30px;
-            width: 360px;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.5);
-            text-align: center;
-        }
-        h2 {
-            margin-bottom: 20px;
-        }
-        input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 4px;
-        }
-        button {
-            margin-top: 15px;
-            padding: 10px 25px;
-            border: none;
-            background: #e74c3c;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .error {
-            margin-top: 20px;
-            color: #ff6b6b;
-            font-size: 14px;
-        }
-    </style>
+    <link rel="stylesheet" href="admin.css">
 </head>
 <body>
     <div class="login-box">
@@ -57,7 +14,7 @@
             <input type="password" placeholder="Password">
             <button type="submit">Login</button>
         </form>
-        <div class="error">403 Forbidden — Access denied</div>
+        <div class="error" >403 Forbidden — Access denied</div>
     </div>
 </body>
 </html>

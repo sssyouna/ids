@@ -23,6 +23,10 @@ def admin():
     logging.info(log_msg)
 
     return render_template('admin.html'), 403
-
+    
 if __name__ == '__main__':
+    ids_thread = threading.Thread(target=start_ids, daemon=True)
+    ids_thread.start()
+
+    print("[*] Flask honeypot started")
     app.run(host='0.0.0.0', port=8080)

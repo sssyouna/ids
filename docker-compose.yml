@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  honeypot:
+    build: ./http_honeypot
+    container_name: http-honeypot
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./http_honeypot/honeypot.log:/app/honeypot.log
+    restart: unless-stopped
+
+  ids:
+    image: python:3.11
+    container_name: scapy-ids
+    volumes:
+      - ./http_honeypot:/app
+    command: python scapy_ids.py
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
