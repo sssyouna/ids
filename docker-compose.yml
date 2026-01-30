@@ -1,5 +1,4 @@
 version: "3.9"
-
 services:
   honeypot:
     build: ./http_honeypot
@@ -9,13 +8,18 @@ services:
     volumes:
       - ./http_honeypot/honeypot.log:/app/honeypot.log
     restart: unless-stopped
+    security_opt:
+      - seccomp=default
 
   ids:
     image: python:3.11
     container_name: scapy-ids
     volumes:
       - ./http_honeypot:/app
-    command: python scapy_ids.py
+      - ./seccomp-ids.json:/seccomp-ids.json:ro
+    command: python sniff.py
     network_mode: host
     cap_add:
       - NET_ADMIN
+    security_opt:
+      - seccomp=/seccomp-ids.json
