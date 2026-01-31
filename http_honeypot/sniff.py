@@ -44,3 +44,7 @@ def detect_attacks(packet):
 def start_ids():
     print("[*] IDS started (Scapy sniffing)")
     sniff(prn=detect_attacks, store=False)
+
+
+if __name__ == "__main__":
+    start_ids()
