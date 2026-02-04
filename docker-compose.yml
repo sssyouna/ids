@@ -28,8 +28,9 @@ services:
       - ids-network
     cap_add:
       - NET_ADMIN
+      - NET_RAW
     volumes:
-      - ./logs:/app  # share logs with host for ELK pickup
+      - ./logs:/app/logs  # share logs with host for ELK pickup
 
   # Elasticsearch
   elasticsearch:
@@ -55,6 +56,12 @@ services:
     container_name: logstash
     ports:
       - "5044:5044"  # Beats input
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=changeme
+    sysctls:
+      - net.core.somaxconn=65535
     networks:
       - elk-network
     volumes:
@@ -62,6 +69,7 @@ services:
       - ./logs:/app  # IDS logs mounted
     depends_on:
       - elasticsearch
+    privileged: true
 
   # Kibana
   kibana:
