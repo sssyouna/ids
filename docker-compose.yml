@@ -8,13 +8,30 @@ services:
     ports:
       - "8080:8080"
     restart: unless-stopped
-    working_dir: /app
-    security_opt:
-      - seccomp=./http_honeypot/seccomp_filter.json
+
     networks:
       - ids-network
     volumes:
-      - ./logs:/app  # share logs with host for ELK pickup
+      - ./logs:/app/logs  # share logs with host for ELK pickup
+>>>>>>> 396866d (final configuration)
+
+  # IDS
+    working_dir: /app
+    security_opt:
+      - apparmor=docker-honeypot
+    networks:
+      - ids-network
+    volumes:
+      - ./logs:/app/logs  # share logs with host for ELK pickup
+
+  # IDS
+=======
+
+    networks:
+      - ids-network
+    volumes:
+      - ./logs:/app/logs  # share logs with host for ELK pickup
+>>>>>>> 396866d (final configuration)
 
   # IDS
   ids:
@@ -62,14 +79,42 @@ services:
       - ELASTICSEARCH_PASSWORD=changeme
     sysctls:
       - net.core.somaxconn=65535
-    networks:
-      - elk-network
+      - ids-network
     volumes:
       - ./logstash/pipeline:/usr/share/logstash/pipeline
-      - ./logs:/app  # IDS logs mounted
+      - ./logs:/app/logs  # IDS logs mounted
     depends_on:
       - elasticsearch
-    privileged: true
+    privileged: false
+    security_opt:
+      - apparmor=docker-ids
+>>>>>>> 396866d (final configuration)
+
+  # Kibana
+    networks:
+      - elk-network
+      - ids-network
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./logs:/app/logs  # IDS logs mounted
+    depends_on:
+      - elasticsearch
+    privileged: false
+    security_opt:
+      - apparmor=docker-ids
+
+  # Kibana
+=======
+      - ids-network
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./logs:/app/logs  # IDS logs mounted
+    depends_on:
+      - elasticsearch
+    privileged: false
+    security_opt:
+      - apparmor=docker-ids
+>>>>>>> 396866d (final configuration)
 
   # Kibana
   kibana:
