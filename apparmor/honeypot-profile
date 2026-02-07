@@ -1,0 +1,28 @@
+#include <tunables/global>
+
+/usr/bin/python3 flags=(attach_disconnected,mediate_deleted) {
+  #include <abstractions/base>
+  #include <abstractions/python>
+
+  # Allow network connections on port 8080
+  network inet stream,
+  network inet6 stream,
+
+  # Allow file access for the honeypot
+  /app/** r,
+  /app/main.py r,
+  /app/templates/** r,
+  /usr/local/lib/python*/site-packages/** r,
+  /usr/lib/python*/** r,
+  /dev/urandom r,
+  /dev/null rw,
+  /dev/zero r,
+
+  # Logging
+  /app/logs/** rw,
+  /var/log/** rw,
+
+  # Deny everything else
+  deny /etc/shadow r,
+  deny /etc/passwd r,
+}
