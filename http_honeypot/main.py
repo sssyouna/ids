@@ -3,11 +3,19 @@ import logging
 
 app = Flask(__name__)
 
-logging.basicConfig(
-    filename='/app/logs/honeypot.log',
-    level=logging.INFO,
-    format='%(asctime)s - %(message)s'
-)
+import datetime
+
+def custom_formatter(msg):
+    timestamp = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+    return f'{timestamp} - {msg}'
+
+# Custom logger to control format
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler('/app/logs/honeypot.log')
+formatter = logging.Formatter('%(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 @app.route('/')
 def index():
@@ -18,9 +26,9 @@ def admin():
     ip_addr = request.remote_addr
     user_agent = request.headers.get('User-Agent')
 
-    log_msg = f"Admin access attempt | IP={ip_addr} | UA={user_agent}"
+    log_msg = f"[INFO] Admin access attempt | IP={ip_addr} | UA={user_agent}"
     print(f"[!] {log_msg}")
-    logging.info(log_msg)
+    logger.info(custom_formatter(log_msg))
 
     return render_template('admin.html'), 403
 

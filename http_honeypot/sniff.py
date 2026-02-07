@@ -3,11 +3,19 @@ from collections import defaultdict
 import time
 import logging
 
-logging.basicConfig(
-    filename='/app/logs/honeypot.log',
-    level=logging.INFO,
-    format='%(asctime)s - %(message)s'
-)
+import datetime
+
+def custom_formatter(msg):
+    timestamp = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+    return f'{timestamp} - {msg}'
+
+# Custom logger to control format
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler('/app/logs/honeypot.log')
+formatter = logging.Formatter('%(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 scan_tracker = defaultdict(set)
 request_times = defaultdict(list)
@@ -21,14 +29,14 @@ def detect_attacks(packet):
             scan_tracker[src].add(dport)
 
             if len(scan_tracker[src]) > 10:
-                logging.info(f"[IDS] Port scan detected from {src}")
+                logger.info(custom_formatter(f"[WARNING] Port scan detected from {src}"))
 
     # 🔍 Suspicious HTTP access
     if packet.haslayer(Raw):
         payload = packet[Raw].load.decode(errors="ignore")
         if "GET /admin" in payload:
             src = packet[IP].src
-            logging.info(f"[IDS] Suspicious /admin access from {src}")
+            logger.info(custom_formatter(f"[WARNING] Suspicious /admin access from {src}"))
 
     # 🔍 Brute-force behavior
     if packet.haslayer(IP):
@@ -39,7 +47,7 @@ def detect_attacks(packet):
         request_times[src] = [t for t in request_times[src] if now - t < 10]
 
         if len(request_times[src]) > 20:
-            logging.info(f"[IDS] Possible brute force from {src}")
+            logger.info(custom_formatter(f"[WARNING] Possible brute force from {src}"))
 
 def start_ids():
     print("[*] IDS started (Scapy sniffing)")
