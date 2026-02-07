@@ -4,7 +4,7 @@ import logging
 app = Flask(__name__)
 
 logging.basicConfig(
-    filename='honeypot.log',
+    filename='/app/logs/honeypot.log',
     level=logging.INFO,
     format='%(asctime)s - %(message)s'
 )

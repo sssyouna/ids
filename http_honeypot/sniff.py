@@ -4,7 +4,7 @@ import time
 import logging
 
 logging.basicConfig(
-    filename='honeypot.log',
+    filename='/app/logs/honeypot.log',
     level=logging.INFO,
     format='%(asctime)s - %(message)s'
 )
